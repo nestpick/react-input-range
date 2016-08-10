@@ -124,12 +124,18 @@ function getKeyByPosition(inputRange, position) {
 }
 
 function renderSliders(inputRange) {
-  var classNames = inputRange.props.classNames;
+  var _inputRange$props = inputRange.props;
+  var classNames = _inputRange$props.classNames;
+  var labelOffsetLeft = _inputRange$props.labelOffsetLeft;
+  var labelOffsetRight = _inputRange$props.labelOffsetRight;
 
   var sliders = [];
   var keys = getKeys(inputRange);
   var values = _valueTransformer2['default'].valuesFromProps(inputRange);
   var percentages = _valueTransformer2['default'].percentagesFromValues(inputRange, values);
+  var width = inputRange.trackClientRect.width;
+
+  var offset = 0;
 
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -143,14 +149,16 @@ function renderSliders(inputRange) {
       var percentage = percentages[key];
       var ref = 'slider' + (0, _util.captialize)(key);
 
-      var _inputRange$props = inputRange.props;
-      var maxValue = _inputRange$props.maxValue;
-      var minValue = _inputRange$props.minValue;
+      var _inputRange$props2 = inputRange.props;
+      var maxValue = _inputRange$props2.maxValue;
+      var minValue = _inputRange$props2.minValue;
 
       if (key === 'min') {
         maxValue = values.max;
+        offset = labelOffsetLeft;
       } else {
         minValue = values.min;
+        offset = labelOffsetRight;
       }
 
       var slider = _react2['default'].createElement(_Slider2['default'], {
@@ -166,7 +174,10 @@ function renderSliders(inputRange) {
         percentage: percentage,
         ref: ref,
         type: key,
-        value: value });
+        value: value,
+        labelOffset: offset,
+        containerWidth: width
+      });
 
       sliders.push(slider);
     }
@@ -525,7 +536,9 @@ InputRange.propTypes = {
   onChange: _react2['default'].PropTypes.func.isRequired,
   onChangeComplete: _react2['default'].PropTypes.func,
   step: _react2['default'].PropTypes.number,
-  value: _propTypes.maxMinValuePropType
+  value: _propTypes.maxMinValuePropType,
+  labelOffsetLeft: _react2['default'].PropTypes.number,
+  labelOffsetRight: _react2['default'].PropTypes.number
 };
 
 InputRange.defaultProps = {
@@ -537,7 +550,9 @@ InputRange.defaultProps = {
   maxValue: 10,
   minValue: 0,
   step: 1,
-  value: null
+  value: null,
+  labelOffsetLeft: 0,
+  labelOffsetRight: 0
 };
 module.exports = exports['default'];
 
@@ -564,6 +579,26 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
+function getStyle(label) {
+  var _label$props = label.props;
+  var offsetLeft = _label$props.offsetLeft;
+  var offsetRight = _label$props.offsetRight;
+
+  if (offsetLeft > 0) {
+    return {
+      left: offsetLeft + 'px'
+    };
+  }
+
+  if (offsetRight > 0) {
+    return {
+      right: offsetRight + 'px'
+    };
+  }
+
+  return {};
+}
+
 var Label = (function (_React$Component) {
   _inherits(Label, _React$Component);
 
@@ -581,10 +616,11 @@ var Label = (function (_React$Component) {
       var containerClassName = _props.containerClassName;
 
       var labelValue = this.props.formatLabel ? this.props.formatLabel(this.props.children) : this.props.children;
+      var style = getStyle(this);
 
       return _react2['default'].createElement(
         'span',
-        { className: className },
+        { className: className, style: style },
         _react2['default'].createElement(
           'span',
           { className: containerClassName },
@@ -603,7 +639,8 @@ Label.propTypes = {
   children: _react2['default'].PropTypes.node,
   className: _react2['default'].PropTypes.string,
   containerClassName: _react2['default'].PropTypes.string,
-  formatLabel: _react2['default'].PropTypes.func
+  formatLabel: _react2['default'].PropTypes.func,
+  offsetLeft: _react2['default'].PropTypes.number
 };
 module.exports = exports['default'];
 
@@ -650,6 +687,26 @@ function getStyle(slider) {
   };
 
   return style;
+}
+
+function getLabelOffset(slider) {
+  var _slider$props = slider.props;
+  var labelOffset = _slider$props.labelOffset;
+  var containerWidth = _slider$props.containerWidth;
+  var percentage = _slider$props.percentage;
+
+  var percWidth = Math.round(containerWidth * (percentage || 0));
+
+  var offsets = {
+    left: 0,
+    right: 0
+  };
+
+  if (percWidth < labelOffset) {
+    offsets.left = labelOffset - percWidth;
+  }
+
+  return offsets;
 }
 
 var Slider = (function (_React$Component) {
@@ -723,7 +780,9 @@ var Slider = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var classNames = this.props.classNames;
+
       var style = getStyle(this);
+      var labelOffset = getLabelOffset(this);
 
       return _react2['default'].createElement(
         'span',
@@ -736,7 +795,10 @@ var Slider = (function (_React$Component) {
           {
             className: classNames.labelValue,
             containerClassName: classNames.labelContainer,
-            formatLabel: this.props.formatLabel },
+            formatLabel: this.props.formatLabel,
+            offsetLeft: labelOffset.left,
+            offsetRight: labelOffset.right
+          },
           this.props.value
         ),
         _react2['default'].createElement('a', {
@@ -773,7 +835,9 @@ Slider.propTypes = {
   onSliderMouseMove: _react2['default'].PropTypes.func.isRequired,
   percentage: _react2['default'].PropTypes.number.isRequired,
   type: _react2['default'].PropTypes.string.isRequired,
-  value: _react2['default'].PropTypes.number.isRequired
+  value: _react2['default'].PropTypes.number.isRequired,
+  labelOffsetLeft: _react2['default'].PropTypes.number,
+  containerWidth: _react2['default'].PropTypes.number
 };
 module.exports = exports['default'];
 
