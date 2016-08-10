@@ -1,6 +1,6 @@
 {
-  "name": "react-input-range-custom",
-  "version": "0.9.1",
+  "name": "react-input-range",
+  "version": "0.9.999",
   "description": "React component for inputting numeric values within a range",
   "keywords": [
     "react",
@@ -83,6 +83,7 @@
     "release": "gulp release",
     "start": "gulp run",
     "test": "gulp test",
-    "prepublish": "npm run build:lib"
+    "prepublish": "npm run build:lib",
+    "postinstall": "npm run build:lib"
   }
 }
