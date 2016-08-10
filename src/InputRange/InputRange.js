@@ -163,11 +163,14 @@ function getKeyByPosition(inputRange, position) {
  * @return {Array.<string>} Array of HTML
  */
 function renderSliders(inputRange) {
-  const { classNames } = inputRange.props;
+  const { classNames, labelOffsetLeft, labelOffsetRight } = inputRange.props;
   const sliders = [];
   const keys = getKeys(inputRange);
   const values = valueTransformer.valuesFromProps(inputRange);
   const percentages = valueTransformer.percentagesFromValues(inputRange, values);
+  const width = inputRange.trackClientRect.width;
+
+  let offset = 0;
 
   for (const key of keys) {
     const value = values[key];
@@ -178,8 +181,10 @@ function renderSliders(inputRange) {
 
     if (key === 'min') {
       maxValue = values.max;
+      offset = labelOffsetLeft;
     } else {
       minValue = values.min;
+      offset = labelOffsetRight;
     }
 
     const slider = (
@@ -196,7 +201,10 @@ function renderSliders(inputRange) {
         percentage={ percentage }
         ref={ ref }
         type={ key }
-        value={ value } />
+        value={ value }
+        labelOffset={offset}
+        containerWidth={width}
+         />
     );
 
     sliders.push(slider);
@@ -627,6 +635,8 @@ InputRange.propTypes = {
   onChangeComplete: React.PropTypes.func,
   step: React.PropTypes.number,
   value: maxMinValuePropType,
+  labelOffsetLeft: React.PropTypes.number,
+  labelOffsetRight: React.PropTypes.number,
 };
 
 /**
@@ -652,4 +662,6 @@ InputRange.defaultProps = {
   minValue: 0,
   step: 1,
   value: null,
+  labelOffsetLeft: 0,
+  labelOffsetRight: 0,
 };

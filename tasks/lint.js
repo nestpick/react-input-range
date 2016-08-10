@@ -14,14 +14,16 @@ gulp.task('lint:script', () => {
   return gulp.src(config.lint.script.src)
     .pipe(eslint())
     .pipe(eslint.format())
-    .pipe(eslint.failOnError());
+    .pipe(eslint.failOnError())
+    ;
 });
 
 gulp.task('lint:task', () => {
   return gulp.src(config.lint.task.src)
     .pipe(eslint())
     .pipe(eslint.format())
-    .pipe(eslint.failOnError());
+    .pipe(eslint.failOnError())
+    ;
 });
 
 gulp.task('lint:style', () => {

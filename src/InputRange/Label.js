@@ -4,6 +4,24 @@
 
 import React from 'react';
 
+function getStyle(label) {
+  const {offsetLeft, offsetRight} = label.props;
+
+  if (offsetLeft > 0) {
+    return {
+      left: `${offsetLeft}px`,
+    };
+  }
+
+  if (offsetRight > 0) {
+    return {
+      right: `${offsetRight}px`,
+    };
+  }
+
+  return {};
+}
+
 /**
  * Label React component
  * @class
@@ -20,9 +38,10 @@ export default class Label extends React.Component {
     const labelValue = this.props.formatLabel ?
                        this.props.formatLabel(this.props.children) :
                        this.props.children;
+    const style = getStyle(this);
 
     return (
-      <span className={ className }>
+      <span className={ className } style={style}>
         <span className={ containerClassName }>
           { labelValue }
         </span>
@@ -44,4 +63,5 @@ Label.propTypes = {
   className: React.PropTypes.string,
   containerClassName: React.PropTypes.string,
   formatLabel: React.PropTypes.func,
+  offsetLeft: React.PropTypes.number,
 };

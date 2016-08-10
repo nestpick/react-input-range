@@ -35,6 +35,27 @@ function getStyle(slider) {
 }
 
 /**
+ * Get the offset for labels
+ * @param {Slider} slider - React component
+ * @return {Object} offset values
+ */
+function getLabelOffset(slider) {
+  const {labelOffset, containerWidth, percentage} = slider.props;
+  const percWidth = Math.round(containerWidth * (percentage || 0));
+
+  const offsets = {
+    left: 0,
+    right: 0,
+  };
+
+  if (percWidth < labelOffset ) {
+    offsets.left = labelOffset - percWidth;
+  }
+
+  return offsets;
+}
+
+/**
  * Slider React component
  * @class
  * @extends React.Component
@@ -144,8 +165,9 @@ export default class Slider extends React.Component {
    * @return {string} Component JSX
    */
   render() {
-    const classNames = this.props.classNames;
+    const {classNames} = this.props;
     const style = getStyle(this);
+    const labelOffset = getLabelOffset(this);
 
     return (
       <span
@@ -155,7 +177,10 @@ export default class Slider extends React.Component {
         <Label
           className={ classNames.labelValue }
           containerClassName={ classNames.labelContainer }
-          formatLabel={ this.props.formatLabel }>
+          formatLabel={ this.props.formatLabel }
+          offsetLeft={labelOffset.left}
+          offsetRight={labelOffset.right}
+          >
           { this.props.value }
         </Label>
 
@@ -206,4 +231,6 @@ Slider.propTypes = {
   percentage: React.PropTypes.number.isRequired,
   type: React.PropTypes.string.isRequired,
   value: React.PropTypes.number.isRequired,
+  labelOffsetLeft: React.PropTypes.number,
+  containerWidth: React.PropTypes.number,
 };
