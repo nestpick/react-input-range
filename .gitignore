@@ -4,6 +4,6 @@
 /build
 /coverage
 /example/build
-/lib
+# /lib
 /node_modules
 /out
