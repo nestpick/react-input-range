@@ -13,7 +13,7 @@ lableOffsetRight        |number                              |Not implemented ye
 
 
 ## Installation
-`npm i https://github.com/fetis/react-input-range.git --save`
+`npm i https://github.com/nestpick/react-input-range.git --save`
 
 ## Development
 After adding changes run command `npm run build:lib` and push library folder into the
