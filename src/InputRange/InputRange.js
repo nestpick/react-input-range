@@ -12,6 +12,12 @@ import { autobind, captialize, distanceTo, isDefined, isObject, length } from '.
 import { maxMinValuePropType } from './propTypes';
 
 /**
+ * Minimum gap between labels in px
+ * @type {number}
+ */
+const COLLISION_GAP = 5;
+
+/**
  * A map for storing internal members
  * @const {WeakMap}
  */
@@ -168,7 +174,6 @@ function renderSliders(inputRange) {
   const keys = getKeys(inputRange);
   const values = valueTransformer.valuesFromProps(inputRange);
   const percentages = valueTransformer.percentagesFromValues(inputRange, values);
-  const width = inputRange.trackClientRect.width;
 
   let offset = 0;
 
@@ -203,7 +208,6 @@ function renderSliders(inputRange) {
         type={ key }
         value={ value }
         labelOffset={offset}
-        containerWidth={width}
          />
     );
 
@@ -262,6 +266,89 @@ export default class InputRange extends React.Component {
       'handleTouchEnd',
       'handleTrackMouseDown',
     ], this);
+  }
+
+  componentDidMount() {
+    if (!this.isMultiValue) return;
+
+    this.updateLabelPosition();
+    // wait for 1s label render finish to get real position
+    window.setTimeout(() => {
+      this.updateLabelPosition('max');
+    }, 0);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!this.isMultiValue) return;
+
+    const {value} = this.props;
+    const {value: prevValue} = prevProps;
+
+    if (value.min !== prevValue.min) this.updateLabelPosition();
+
+    if (value.max !== prevValue.max) this.updateLabelPosition('max');
+  }
+
+  /**
+   * Low level logic for calculation label positions
+   * @param movingSlider Slider that was moved
+   * @param staticSlider Slider that stays
+   * @param direction
+   */
+  calcLabelOffset(movingSlider, staticSlider, direction) {
+    const trackRect = this.trackClientRect;
+
+    const movingLabel = movingSlider.labelRef;
+    const movingRect = movingLabel.rect;
+    const movingOffset = movingLabel.state.offsetLeft;
+    const {labelOffset} = movingSlider.props;
+
+    const staticLabel = staticSlider.labelRef;
+    const staticRect = staticLabel.rect;
+
+    // Check collision between labels
+    let collisionDiff;
+
+    if (direction === 'left') {
+      collisionDiff = staticRect.left - movingRect.right + movingOffset;
+    } else {
+      collisionDiff = movingRect.left - movingOffset - staticRect.right;
+    }
+
+    if (collisionDiff < COLLISION_GAP) {
+      const offset = direction === 'left' ? collisionDiff - COLLISION_GAP : COLLISION_GAP - collisionDiff;
+
+      movingLabel.setState({
+        offsetLeft: offset,
+      });
+    } else {
+      // Check left border offset
+      const minDiff = movingRect.left - movingOffset - trackRect.left;
+
+      if (minDiff < labelOffset) {
+        movingLabel.setState({
+          offsetLeft: labelOffset - minDiff,
+        });
+      } else {
+        movingLabel.setState({
+          offsetLeft: 0,
+        });
+      }
+    }
+  }
+
+  /**
+   * Adjust label position to prevent overlapping
+   * @param movingKey Which slider was moved
+   */
+  updateLabelPosition(movingKey = 'min') {
+    const {sliderMin, sliderMax} = this.refs;
+
+    if (movingKey === 'min') {
+      this.calcLabelOffset(sliderMin, sliderMax, 'left');
+    } else {
+      this.calcLabelOffset(sliderMax, sliderMin, 'right');
+    }
   }
 
   /**
@@ -551,6 +638,7 @@ export default class InputRange extends React.Component {
 
     document.removeEventListener('touchend', this.handleTouchEnd);
   }
+
 
   /**
    * Render method of the component

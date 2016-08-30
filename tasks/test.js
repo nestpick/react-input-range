@@ -11,14 +11,11 @@ function startServer(options, done) {
 gulp.task('test', [
   'test:script',
 ]);
-// gulp.task('test', () => true);
 
 gulp.task('test:script', (done) => {
   startServer(config.test.unit, done);
-  // done();
 });
 
 gulp.task('test:script:watch', (done) => {
   startServer(config.test.watch, done);
-  // done();
 });

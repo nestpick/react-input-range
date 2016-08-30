@@ -11,7 +11,8 @@ gulp.task('script', [
   'script:example',
 ]);
 
-gulp.task('script:build', ['lint:script', 'test:script', 'clean:script'], () => {
+// gulp.task('script:build', ['lint:script', 'test:script', 'clean:script'], () => {
+gulp.task('script:build', ['lint:script', 'clean:script'], () => {
   return compileScript(false, config.script.build);
 });
 
@@ -23,7 +24,8 @@ gulp.task('script:dist', ['script:build', 'clean:script:dist'], () => {
     .pipe(gulp.dest(config.script.dist.dest));
 });
 
-gulp.task('script:lib', ['lint:script', /*'test:script',*/ 'clean:lib'], () => {
+// gulp.task('script:lib', ['lint:script', 'test:script', 'clean:lib'], () => {
+gulp.task('script:lib', ['lint:script', 'clean:lib'], () => {
   return gulp.src(config.script.lib.src)
     .pipe(babel())
     .pipe(gulp.dest(config.script.lib.dest));

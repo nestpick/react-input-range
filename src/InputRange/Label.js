@@ -3,17 +3,18 @@
  */
 
 import React from 'react';
+import {EMPTY_BOUNDING_BOX} from './util';
 
 function getStyle(label) {
-  const {offsetLeft, offsetRight} = label.props;
+  const {offsetLeft, offsetRight} = label.state;
 
-  if (offsetLeft > 0) {
+  if (offsetLeft !== 0) {
     return {
       left: `${offsetLeft}px`,
     };
   }
 
-  if (offsetRight > 0) {
+  if (offsetRight !== 0) {
     return {
       right: `${offsetRight}px`,
     };
@@ -29,6 +30,25 @@ function getStyle(label) {
  * @param {Object} props - React component props
  */
 export default class Label extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      offsetLeft: 0,
+      offsetRight: 0,
+    };
+  }
+
+  get rect() {
+    const {containerRef} = this.refs;
+
+    if (containerRef) {
+      return containerRef.getBoundingClientRect();
+    }
+
+    return EMPTY_BOUNDING_BOX;
+  }
+
   /**
    * Render method of the component
    * @return {string} Component JSX
@@ -42,12 +62,13 @@ export default class Label extends React.Component {
 
     return (
       <span className={ className } style={style}>
-        <span className={ containerClassName }>
+        <span className={ containerClassName } ref="containerRef">
           { labelValue }
         </span>
       </span>
     );
   }
+
 }
 
 /**

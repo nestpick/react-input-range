@@ -11,6 +11,8 @@ Property                | Type                               | Description
 lableOffsetLeft         |number                              |Left offset for value label in pixels
 lableOffsetRight        |number                              |Not implemented yet
 
+There's also support of prevent labels overlapping for sliders.
+
 
 ## Installation
 `npm i https://github.com/nestpick/react-input-range.git --save`

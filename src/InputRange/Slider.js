@@ -40,19 +40,20 @@ function getStyle(slider) {
  * @return {Object} offset values
  */
 function getLabelOffset(slider) {
-  const {labelOffset, containerWidth, percentage} = slider.props;
-  const percWidth = Math.round(containerWidth * (percentage || 0));
-
-  const offsets = {
+  const {labelOffset, type} = slider.props;
+  const offset = {
     left: 0,
     right: 0,
   };
 
-  if (percWidth < labelOffset ) {
-    offsets.left = labelOffset - percWidth;
+
+  if (type === 'min') {
+    offset.left = labelOffset;
+  } else {
+    offset.right = labelOffset;
   }
 
-  return offsets;
+  return offset;
 }
 
 /**
@@ -64,6 +65,8 @@ function getLabelOffset(slider) {
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
+
+    this.labelRef = null;
 
     // Auto-bind
     autobind([
@@ -175,6 +178,7 @@ export default class Slider extends React.Component {
         ref="slider"
         style={ style }>
         <Label
+          ref={ (ref) => this.labelRef = ref}
           className={ classNames.labelValue }
           containerClassName={ classNames.labelContainer }
           formatLabel={ this.props.formatLabel }
@@ -231,6 +235,5 @@ Slider.propTypes = {
   percentage: React.PropTypes.number.isRequired,
   type: React.PropTypes.string.isRequired,
   value: React.PropTypes.number.isRequired,
-  labelOffsetLeft: React.PropTypes.number,
-  containerWidth: React.PropTypes.number,
+  labelOffset: React.PropTypes.number,
 };

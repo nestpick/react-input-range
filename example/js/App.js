@@ -10,13 +10,13 @@ class App extends React.Component {
       value2: null,
       value3: 10,
       value4: {
-        min: 1,
-        max: 10,
+        min: 530,
+        max: 660,
       },
       value5: {
         min: null,
         max: null,
-      }
+      },
     };
   }
 
@@ -91,14 +91,16 @@ class App extends React.Component {
     //   onChange={this.handleValue5Change.bind(this)}
     // />
     //
+
     return (
       <form className="form">
 
         <InputRange
-          maxValue={20}
-          minValue={0}
-          labelSuffix="kg"
-          labelOffsetLeft={167}
+          maxValue={1500}
+          minValue={500}
+          labelPrefix="prefix "
+          labelSuffix=" suffix"
+          labelOffsetLeft={150}
           value={this.state.value4}
           onChange={this.handleValue4Change.bind(this)}
           onChangeComplete={this.handleChangeComplete.bind(this)}
