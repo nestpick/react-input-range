@@ -20,3 +20,5 @@ There's also support of prevent labels overlapping for sliders.
 ## Development
 After adding changes run command `npm run build:lib` and push library folder into the
 repository. After this you'll be able to install fresh version with `npm install`.
+
+Bump the version with `npm version` and update version dependency in `package.json` of INTNESTTWO project
