@@ -15,7 +15,7 @@ There's also support of prevent labels overlapping for sliders.
 
 
 ## Installation
-`npm i https://github.com/nestpick/react-input-range.git --save`
+`npm i https://github.com/nestpick/react-input-range.git#v0.9.xxxx --save`
 
 ## Development
 After adding changes run command `npm run build:lib` and push library folder into the
