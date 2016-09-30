@@ -17,6 +17,8 @@ class App extends React.Component {
         min: null,
         max: null,
       },
+      rangeStart: 500,
+      rangeEnd: 1500,
     };
   }
 
@@ -58,6 +60,12 @@ class App extends React.Component {
     return labelValue.toFixed(2);
   }
 
+  changeRange() {
+    this.setState({
+      rangeEnd: Math.round(600 + Math.random() * 100),
+    });
+  }
+
   render() {
     const defaultValue = 2;
     const defaultValue2 = {
@@ -96,8 +104,8 @@ class App extends React.Component {
       <form className="form">
 
         <InputRange
-          maxValue={1500}
-          minValue={500}
+          maxValue={this.state.rangeEnd}
+          minValue={this.state.rangeStart}
           labelPrefix="prefix "
           labelSuffix=" suffix"
           labelOffsetLeft={150}
@@ -105,6 +113,10 @@ class App extends React.Component {
           onChange={this.handleValue4Change.bind(this)}
           onChangeComplete={this.handleChangeComplete.bind(this)}
         />
+
+        <div>
+          <button type="button" onClick={() => this.changeRange()}>Test range change</button>
+        </div>
 
       </form>
     );

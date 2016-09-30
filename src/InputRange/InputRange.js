@@ -281,12 +281,14 @@ export default class InputRange extends React.Component {
   componentDidUpdate(prevProps) {
     if (!this.isMultiValue) return;
 
-    const {value} = this.props;
-    const {value: prevValue} = prevProps;
+    const {value, minValue, maxValue} = this.props;
+    const {value: prevValue, minValue: prevMinValue, maxValue: prevMaxValue} = prevProps;
 
-    if (value.min !== prevValue.min) this.updateLabelPosition();
+    const isRangeUpdate = prevMinValue !== minValue || prevMaxValue !== maxValue;
 
-    if (value.max !== prevValue.max) this.updateLabelPosition('max');
+    if (value.min !== prevValue.min || isRangeUpdate) this.updateLabelPosition();
+
+    if (value.max !== prevValue.max || isRangeUpdate) this.updateLabelPosition('max');
   }
 
   /**
